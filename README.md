@@ -1,3 +1,11 @@
+Fitur Utama:
+1.	Category 		=> CRUD (tambahkan view show.blade) sudah selesai
+2.	Post 			=> CRUD (tambahkan view show.blade & edit.blade) selesai tinggal show
+3.	Author 			=> CRUD (lengkapi CRUD logic & viewnya) sudah selesai
+4.	user profile 		=> details user info (cukup view detail info user) masih belum
+5. Authentication 	=> scaffolding login & register (optional)
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
