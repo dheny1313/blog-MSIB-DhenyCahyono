@@ -4,7 +4,9 @@
 
 @section('content')
 @if ($posts->count() > 0)
-    @foreach ($posts as $post)
+    <div class="col">
+        @foreach ($posts as $post)
+    
         <div class="card" style="width: 18rem;">
             <h3 class="card-title">{{ $post->title }}</h3>
             @if ($post->image)
@@ -25,7 +27,9 @@
                 <a href="{{ route('posts.show', $post->id) }}" class="btn btn-primary">Lihat Selengkapnya</a>
             </div>
         </div>
+         
     @endforeach
+    </div>
 @else
     <h1>Belum ada postingan</h1>
 @endif
