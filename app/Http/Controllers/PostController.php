@@ -80,18 +80,18 @@ class PostController extends Controller
             $imagePath = $post->image; // Keep the existing image by default
 
             if ($request->hasFile('image')) {
-                // If a new image is uploaded, store it and update the path
-                $imagePath = Storage::disk('public')->delete($post->image);
-                $imagePath_new = $request->file('image')->store('asset-images', 'public');
+                // If a new image is uploaded, delete the old image and store the new one
+                Storage::disk('public')->delete($post->image);
+                $imagePath = $request->file('image')->store('asset-images', 'public');
             }
 
             $post->update([
                 'title' => $request->title,
                 'content' => $request->content,
-                'image' => $imagePath_new,
+                'image' => $imagePath, // Use the potentially updated image path
                 'is_published' => $request->has('is_published') ? true : false,
                 'category_id' => $request->category_id,
-                'author_id' => $request->author_id
+                'author_id' => $request->author_id,
             ]);
 
             return redirect()->route('posts.index')->with('success', 'Post updated successfully');
@@ -99,6 +99,7 @@ class PostController extends Controller
             return redirect()->route('posts.index')->with('error', $err->getMessage());
         }
     }
+
 
     public function destroy(Post $post)
     {
