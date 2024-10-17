@@ -62,9 +62,9 @@
         @endif
     </div>
     <div class="form-check">
-        <input type="checkbox" name="is_published" value="1" {{ $post->is_published ? 'checked' : '' }}>
+        <input type="checkbox" name="is_published" value="1" {{ old('is_published', $post->is_published) ? 'checked' : '' }} >
         <label for="isPublished" class="form-check-label">Publish</label>
-    </div>
+    </div>    
     <button type="submit" class="btn btn-primary mt-2">Submit</button>
 </form>
 

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Author;
 use App\Models\Post;
+use GrahamCampbell\ResultType\Success;
+use Illuminate\Database\Schema\PostgresSchemaState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -61,36 +64,41 @@ class PostController extends Controller
         return view('posts.edit', compact('post', "categories", "authors"));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'title'   => 'required|string|max:255',
-            'content' => 'nullable|string',
-            'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'title'         => 'required|string|max:255',
+            'content'       => 'required|string',
+            'image'         => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'is_published'  => 'nullable|boolean',
+            'category_id'   => 'required|exists:categories,id',
+            'author_id'     => 'required|exists:authors,id',
         ]);
 
         try {
-            // Cek apakah ada file gambar yang di-upload
-            if ($request->hasFile('image')) {
-                // Hapus file gambar lama jika ada
-                if ($post->image) {
-                    Storage::disk('public')->delete($post->image);
-                }
+            $post = Post::findOrFail($id);
+            $imagePath = $post->image; // Keep the existing image by default
 
-                // Simpan gambar baru
-                $imagePath = $request->file('image')->store('asset-images', 'public');
-                $post->image = $imagePath; // Set gambar baru ke dalam model
+            if ($request->hasFile('image')) {
+                // If a new image is uploaded, store it and update the path
+                $imagePath = Storage::disk('public')->delete($post->image);
+                $imagePath_new = $request->file('image')->store('asset-images', 'public');
             }
 
-            // Update data post tanpa menyertakan gambar jika tidak ada gambar baru
-            $post->update($request->only('title', 'content', 'is_published', 'category_id'));
+            $post->update([
+                'title' => $request->title,
+                'content' => $request->content,
+                'image' => $imagePath_new,
+                'is_published' => $request->has('is_published') ? true : false,
+                'category_id' => $request->category_id,
+                'author_id' => $request->author_id
+            ]);
 
             return redirect()->route('posts.index')->with('success', 'Post updated successfully');
         } catch (\Exception $err) {
-            return redirect()->route('posts.index')->with('error', 'Error updating post: ' . $err->getMessage());
+            return redirect()->route('posts.index')->with('error', $err->getMessage());
         }
     }
-
 
     public function destroy(Post $post)
     {
@@ -106,8 +114,14 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully');
     }
 
-    public function show(Post $post)
+    public function show()
     {
-        return view("posts.show", compact('post'));
+        // Retrieve published posts with related category and author using Eloquent ORM
+        $posts = Post::with(['category', 'author'])
+            ->where('is_published', true)
+            ->get();
+
+        // Return the view with the posts data
+        return view('welcome', compact('posts'));
     }
 }
