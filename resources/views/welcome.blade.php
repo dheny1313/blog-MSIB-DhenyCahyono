@@ -3,6 +3,7 @@
 @section('title', 'Home Page')
 
 @section('content')
+<h1 class="text-center">selamat datang di blog msib</h1>
 @if ($posts->count() > 0)
     <div class="col">
         @foreach ($posts as $post)
