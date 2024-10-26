@@ -2,7 +2,7 @@ Fitur Utama:
 1.	Category 		=> CRUD (tambahkan view show.blade) sudah selesai
 2.	Post 			=> CRUD (tambahkan view show.blade & edit.blade) selesai tinggal show
 3.	Author 			=> CRUD (lengkapi CRUD logic & viewnya) sudah selesai
-4.	user profile 		=> details user info (cukup view detail info user) masih belum
+4.	user profile 		=> details user info (cukup view detail info user) masih sederhana
 5. Authentication 	=> scaffolding login & register (optional)
 
 
